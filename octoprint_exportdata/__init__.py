@@ -96,9 +96,9 @@ class ExportdataPlugin(octoprint.plugin.SettingsPlugin,
 		if self.temperature_data:
 			if "tool0" in self.temperature_data:
 				write_data += "nozzle: "
-				write_data += str(self.temperature_data["tool0"]["actual"]).rjust(5)
-				write_data += "°C of"
-				write_data += str(self.temperature_data["tool0"]["target"]).rjust(5)
+				write_data += str("{:.1f}".format(self.temperature_data["tool0"]["actual"])).rjust(5)
+				write_data += "°C of "
+				write_data += str("{:.1f}".format(self.temperature_data["tool0"]["target"])).rjust(5)
 				write_data += "°C"
 
 			if write_data:
@@ -106,9 +106,9 @@ class ExportdataPlugin(octoprint.plugin.SettingsPlugin,
 
 			if "bed" in self.temperature_data:
 				write_data += "bed:    "
-				write_data += str(self.temperature_data["bed"]["actual"]).rjust(5)
-				write_data += "°C of"
-				write_data += str(self.temperature_data["bed"]["target"]).rjust(5)
+				write_data += str("{:.1f}".format(self.temperature_data["bed"]["actual"])).rjust(5)
+				write_data += "°C of "
+				write_data += str("{:.1f}".format(self.temperature_data["bed"]["target"])).rjust(5)
 				write_data += "°C"
 
 		self.touch(self.folder, self.temp_file, write_data)
@@ -135,7 +135,6 @@ class ExportdataPlugin(octoprint.plugin.SettingsPlugin,
 
 				write_data += "state:   "
 				write_data += state_dict["text"].lower()
-				write_data += "\n"
 
 			self._logger.debug("paused:    {flag_paused}".format(**locals()))
 			self._logger.debug("printing:  {flag_printing}".format(**locals()))
@@ -144,6 +143,8 @@ class ExportdataPlugin(octoprint.plugin.SettingsPlugin,
 			self._logger.debug("finishing: {flag_finishing}".format(**locals()))
 
 			if flag_paused or flag_printing or flag_pausing or flag_canceling or flag_finishing:
+				write_data += "\n"
+
 				if "job" in self.printer_data:
 					job_dict = self.printer_data["job"]
 
@@ -154,29 +155,17 @@ class ExportdataPlugin(octoprint.plugin.SettingsPlugin,
 							write_data += "file:    "
 							write_data += job_dict["file"]["name"]
 					else:
-						write_data += "file: -"
+						write_data += "file:    -"
 
 					write_data += "\n"
 
 				if "progress" in self.printer_data:
 					progress_dict = self.printer_data["progress"]
-					completion = progress_dict["completion"]
 					print_time = progress_dict["printTime"]
 					print_time_left = progress_dict["printTimeLeft"]
 
-					if completion is None:
-						write_data += "percent: -"
-					else:
-						float_comp = math.trunc(float(completion) * 10000.0) / 100.0
-
-						write_data += "percent: "
-						write_data += str(float_comp).rjust(6)
-						write_data += "%"
-
-					write_data += "\n"
-
 					if print_time is None:
-						write_data += "elapsed: -"
+						write_data += "elapsed: 0s"
 					else:
 						write_data += "elapsed: "
 						write_data += self.sec_to_text(print_time)
@@ -184,14 +173,40 @@ class ExportdataPlugin(octoprint.plugin.SettingsPlugin,
 					write_data += "\n"
 
 					if print_time_left is None:
-						write_data += "left:    -"
+						write_data += "left:    0s"
 					else:
 						write_data += "left:    "
 						write_data += self.sec_to_text(print_time_left)
 
 					write_data += "\n"
 
+					if print_time is None or print_time_left is None:
+						write_data += "percent: 0.0%"
+					else:
+						float_percent = 100.0 * float(print_time / (print_time_left + print_time))
+
+						write_data += "percent: "
+						write_data += str("{:.1f}".format(float_percent))
+						write_data += "%"
+			else:
+				write_data = "\n\n\n\n" + write_data
+
 		self.touch(self.folder, self.status_file, write_data)
+
+	def get_update_information(self):
+		return dict(
+			test=dict(
+				displayName="OctoPrint ExportData",
+				displayVersion=self._plugin_version,
+
+				type="github_release",
+				user="andili00",
+				repo="OctoPrint-Exportdata",
+				current=self._plugin_version,
+
+				pip="https://github.com/andili00/OctoPrint-Exportdata/archive/{target_version}.zip"
+			)
+		)
 
 	@staticmethod
 	def touch(path, filename, data):
