@@ -56,19 +56,19 @@ class ExportdataPlugin(octoprint.plugin.SettingsPlugin,
 		if self.folder != new_folder:
 			try:
 				os.makedirs(new_folder, exist_ok=True)
-				self._logger.info("folder changed from {self.folder} to {new_folder}".format(**locals()))
+				self._logger.debug("folder changed from {self.folder} to {new_folder}".format(**locals()))
 				self.folder = new_folder
 				directory_changed = True
 			except OSError as error:
-				self._logger.error("directory {new_folder} couldn't be created".format(**locals()))
+				self._logger.debug("directory {new_folder} couldn't be created".format(**locals()))
 
 		if self.temp_file != new_temp:
-			self._logger.info("temperature file changed from {self.temp_file} to {new_temp}".format(**locals()))
+			self._logger.debug("temperature file changed from {self.temp_file} to {new_temp}".format(**locals()))
 			self.temp_file = new_temp
 			temp_changed = True
 
 		if self.status_file != new_status:
-			self._logger.info("status file changed from {self.status_file} to {new_status}".format(**locals()))
+			self._logger.debug("status file changed from {self.status_file} to {new_status}".format(**locals()))
 			self.status_file = new_status
 			status_changed = True
 
@@ -137,11 +137,11 @@ class ExportdataPlugin(octoprint.plugin.SettingsPlugin,
 				write_data += state_dict["text"].lower()
 				write_data += "\n"
 
-			self._logger.info("paused: {flag_paused}".format(**locals()))
-			self._logger.info("printing: {flag_printing}".format(**locals()))
-			self._logger.info("pausing: {flag_pausing}".format(**locals()))
-			self._logger.info("canceling: {flag_canceling}".format(**locals()))
-			self._logger.info("finishing: {flag_finishing}".format(**locals()))
+			self._logger.debug("paused:    {flag_paused}".format(**locals()))
+			self._logger.debug("printing:  {flag_printing}".format(**locals()))
+			self._logger.debug("pausing:   {flag_pausing}".format(**locals()))
+			self._logger.debug("canceling: {flag_canceling}".format(**locals()))
+			self._logger.debug("finishing: {flag_finishing}".format(**locals()))
 
 			if flag_paused or flag_printing or flag_pausing or flag_canceling or flag_finishing:
 				if "job" in self.printer_data:
