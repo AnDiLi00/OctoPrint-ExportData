@@ -1,0 +1,31 @@
+<h3>Export Data Settings</h3>
+
+<form class="form-horizontal" onsubmit="return false;">
+
+    <div class="control-group">
+      <label class="control-label">{{ _('Folder') }}</label>
+      <div class="controls">
+        <div class="input-append input-block-level">
+          <input type="text" data-bind="value: settings.plugins.exportdata.folder"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label">{{ _('Temperature File') }}</label>
+      <div class="controls">
+        <div class="input-append input-block-level">
+          <input type="text" data-bind="value: settings.plugins.exportdata.temperature_file"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label">{{ _('Printer Status File') }}</label>
+      <div class="controls">
+        <div class="input-append input-block-level">
+          <input type="text" data-bind="value: settings.plugins.exportdata.printstatus_file"/>
+        </div>
+      </div>
+    </div>
+</form>
