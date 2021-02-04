@@ -11,14 +11,14 @@ plugin_package = "octoprint_exportdata"
 
 # The plugin's human readable name. Can be overwritten within OctoPrint's internal data via __plugin_name__ in the
 # plugin module
-plugin_name = "OctoPrint-Exportdata"
+plugin_name = "OctoPrint-ExportData"
 
 # The plugin's version. Can be overwritten within OctoPrint's internal data via __plugin_version__ in the plugin module
-plugin_version = "0.1.2"
+plugin_version = "0.1.0"
 
 # The plugin's description. Can be overwritten within OctoPrint's internal data via __plugin_description__ in the plugin
 # module
-plugin_description = """exports print data to files"""
+plugin_description = """Exports print status and temperature to files"""
 
 # The plugin's author. Can be overwritten within OctoPrint's internal data via __plugin_author__ in the plugin module
 plugin_author = "Andreas Pecuch"
@@ -27,7 +27,7 @@ plugin_author = "Andreas Pecuch"
 plugin_author_email = "pecuch.andreas@aon.at"
 
 # The plugin's homepage URL. Can be overwritten within OctoPrint's internal data via __plugin_url__ in the plugin module
-plugin_url = "https://github.com/andili00/OctoPrint-Exportdata"
+plugin_url = "https://github.com/andili00/OctoPrint-ExportData"
 
 # The plugin's license. Can be overwritten within OctoPrint's internal data via __plugin_license__ in the plugin module
 plugin_license = "AGPLv3"
@@ -91,6 +91,7 @@ setup_parameters = octoprint_setuptools.create_plugin_setup_parameters(
 
 if len(additional_setup_parameters):
 	from octoprint.util import dict_merge
+
 	setup_parameters = dict_merge(setup_parameters, additional_setup_parameters)
 
 setup(**setup_parameters)
