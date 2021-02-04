@@ -61,20 +61,24 @@ class ExportDataPlugin(octoprint.plugin.SettingsPlugin,
 		if self.folder != new_folder:
 			try:
 				os.makedirs(new_folder, exist_ok=True)
-				self.folder = new_folder
+				self.remove_path(self.folder)
 				changed = True
 			except OSError as error:
 				self._logger.error("folder {} couldn't be created".format(new_folder))
 
 		if self.temperature_file != new_temperature:
-			self.temperature_file = new_temperature
+			self.remove_file(self.folder, self.temperature_file)
 			changed = True
 
 		if self.status_file != new_status:
-			self.status_file = new_status
+			self.remove_file(self.folder, self.status_file)
 			changed = True
 
 		if changed:
+			self.folder = new_folder
+			self.temperature_file = new_temperature
+			self.status_file = new_status
+
 			self.start_timer()
 
 	def start_timer(self):
@@ -206,6 +210,18 @@ class ExportDataPlugin(octoprint.plugin.SettingsPlugin,
 			file_tmp = open(os.path.join(path, filename), 'w+')
 			file_tmp.write(data)
 			file_tmp.close()
+
+	@staticmethod
+	def remove_file(path, filename):
+		full_path = os.path.join(path, filename)
+
+		if filename and os.path.exists(full_path):
+			os.remove(full_path)
+
+	@staticmethod
+	def remove_path(path):
+		if path and os.path.exists(path):
+			os.rmdir(path)
 
 	@staticmethod
 	def seconds_to_text(seconds):
