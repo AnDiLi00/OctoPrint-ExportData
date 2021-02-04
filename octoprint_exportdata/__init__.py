@@ -2,7 +2,6 @@
 from __future__ import absolute_import
 
 import os
-import logging
 
 import octoprint.plugin
 from octoprint.util import RepeatedTimer
@@ -205,42 +204,64 @@ class ExportDataPlugin(octoprint.plugin.SettingsPlugin,
 			)
 		)
 
-	@staticmethod
-	def touch_file(path, filename, data):
-		full_path = os.path.join(path, filename)
+	def touch_file(self, path, file, data):
+		joined = os.path.join(path, file)
 
-		if filename:
-			try:
-				file_tmp = open(full_path, 'w+')
-				file_tmp.write(data)
-				file_tmp.close()
-			except OSError as error:
-				logging.error("file '{}' couldn't be created - errno:{}".format(full_path, error.errno))
+		if path:
+			if file:
+				self.touch_path(path)
 
-	@staticmethod
-	def remove_file(path, filename):
-		full_path = os.path.join(path, filename)
+				try:
+					file_tmp = open(joined, 'w+')
+					file_tmp.write(data)
+					file_tmp.close()
+				except OSError as error:
+					self._logger.error("file '{}' couldn't be created - errno:{}".format(joined, error.errno))
+			else:
+				self._logger.error("file not valid")
+		else:
+			self._logger.error("path not valid")
 
-		if filename and os.path.exists(full_path):
-			try:
-				os.remove(full_path)
-			except OSError as error:
-				logging.error("file '{}' couldn't be removed - errno:{}".format(full_path, error.errno))
+	def remove_file(self, path, file):
+		joined = os.path.join(path, file)
 
-	@staticmethod
-	def touch_path(path):
-		try:
-			os.makedirs(path, exist_ok=True)
-		except OSError as error:
-			logging.error("path '{}' couldn't be created - errno:{}".format(path, error.errno))
+		if path:
+			if file:
+				if os.path.exists(joined):
+					try:
+						os.remove(joined)
+					except OSError as error:
+						self._logger.error("file '{}' couldn't be removed - errno:{}".format(joined, error.errno))
+				else:
+					self._logger.error("file does not exist")
+			else:
+				self._logger.error("file not valid")
+		else:
+			self._logger.error("path not valid")
 
-	@staticmethod
-	def remove_path(path):
-		if path and os.path.exists(path):
-			try:
-				os.rmdir(path)
-			except OSError as error:
-				logging.error("path '{}' couldn't be removed - errno:{}".format(path, error.errno))
+	def touch_path(self, path):
+		if path:
+			if os.path.exists(path):
+				pass
+			else:
+				try:
+					os.makedirs(path, exist_ok=True)
+				except OSError as error:
+					self._logger.error("path '{}' couldn't be created - errno:{}".format(path, error.errno))
+		else:
+			self._logger.error("path not valid")
+
+	def remove_path(self, path):
+		if path:
+			if os.path.exists(path):
+				try:
+					os.rmdir(path)
+				except OSError as error:
+					self._logger.error("path '{}' couldn't be removed - errno:{}".format(path, error.errno))
+			else:
+				self._logger.error("path does not exist")
+		else:
+			self._logger.error("path not valid")
 
 	@staticmethod
 	def seconds_to_text(seconds):
@@ -261,7 +282,6 @@ class ExportDataPlugin(octoprint.plugin.SettingsPlugin,
 			result = "{}s".format(seconds)
 
 		return result
-
 
 __plugin_name__ = "ExportData Plugin"
 __plugin_author__ = "Andreas Pecuch"
