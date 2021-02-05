@@ -182,10 +182,7 @@ class ExportDataPlugin(octoprint.plugin.SettingsPlugin,
 
 					if print_time and print_time_left:
 						float_percent = 100.0 * float(print_time / (print_time_left + print_time))
-
-						data += "percent: "
-						data += str("{:.1f}".format(float_percent))
-						data += "%"
+						data += "percent: {:.1f}%".format(float_percent)
 					else:
 						data += "percent: 0.0%"
 			else:
