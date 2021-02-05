@@ -132,7 +132,11 @@ class ExportDataPlugin(octoprint.plugin.SettingsPlugin,
 				state_dict = self.status_data["state"]
 				flags_dict = state_dict["flags"]
 
-				if flags_dict["cancelling"] or flags_dict["finishing"] or flags_dict["paused"] or flags_dict["pausing"] or flags_dict["printing"]:
+				if flags_dict["cancelling"] or \
+				   flags_dict["finishing"] or \
+				   flags_dict["paused"] or \
+				   flags_dict["pausing"] or \
+				   flags_dict["printing"]:
 					printing = True
 
 				data += "state:   "
@@ -282,6 +286,7 @@ class ExportDataPlugin(octoprint.plugin.SettingsPlugin,
 			result = "{}s".format(seconds)
 
 		return result
+
 
 __plugin_name__ = "ExportData Plugin"
 __plugin_author__ = "Andreas Pecuch"
