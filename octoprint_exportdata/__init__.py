@@ -133,10 +133,10 @@ class ExportDataPlugin(octoprint.plugin.SettingsPlugin,
 				flags_dict = state_dict["flags"]
 
 				if flags_dict["cancelling"] or \
-				   flags_dict["finishing"] or \
-				   flags_dict["paused"] or \
-				   flags_dict["pausing"] or \
-				   flags_dict["printing"]:
+					flags_dict["finishing"] or \
+					flags_dict["paused"] or \
+					flags_dict["pausing"] or \
+					flags_dict["printing"]:
 					printing = True
 
 				data += "state:   "
